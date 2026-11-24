@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cochlear Audio Test V0.1</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <span class="badge" lang="en" dir="ltr">Test Version V0.1</span>
+      <h1>اختبار الصوت</h1>
+      <p class="product" lang="en" dir="ltr">Cochlear Audio Test</p>
+      <p>شغّل عينات صوتية أو سجّل صوتك واختبر الاستماع من جهازك.</p>
+    </header>
+
+    <div class="layout">
+      <section class="card library" aria-labelledby="library-title">
+        <h2 id="library-title">مكتبة الأصوات</h2>
+        <ul class="tracks">
+          <li><span>نغمة هادئة</span><button type="button" data-source="sounds/test-01.wav" data-title="نغمة هادئة">تشغيل</button></li>
+          <li><span>نغمتان متعاقبتان</span><button type="button" data-source="sounds/test-02.wav" data-title="نغمتان متعاقبتان">تشغيل</button></li>
+          <li><span>لحن قصير</span><button type="button" data-source="sounds/test-03.wav" data-title="لحن قصير">تشغيل</button></li>
+        </ul>
+        <div class="player">
+          <h3 id="current" aria-live="polite">اختر صوتًا للتشغيل</h3>
+          <label class="sr-only" for="progress">موضع التشغيل</label>
+          <input id="progress" type="range" min="0" max="1" step="0.05" value="0" dir="ltr" disabled>
+          <div class="times" dir="ltr"><span id="elapsed">0:00</span><span id="duration">0:00</span></div>
+          <div class="volume">
+            <label for="volume">مستوى الصوت</label>
+            <input id="volume" type="range" min="0" max="100" value="15" dir="ltr">
+            <output id="volume-value" for="volume" dir="ltr">15%</output>
+          </div>
+          <p id="playback-status" class="status" role="status"></p>
+          <audio id="audio" preload="metadata"></audio>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="record-title">
+        <h2 id="record-title">تسجيل الميكروفون</h2>
+        <p>سجّل مقطعًا ثم استمع إليه أو نزّله على جهازك.</p>
+        <div class="record-controls">
+          <button id="record" type="button">بدء التسجيل</button>
+          <span id="timer" class="timer" dir="ltr" aria-label="مدة التسجيل">0:00</span>
+        </div>
+        <p id="record-status" class="status" role="status"></p>
+        <div id="record-result" class="actions" hidden>
+          <button id="play-recording" type="button" data-title="تسجيل الميكروفون">تشغيل</button>
+          <a id="download">تنزيل التسجيل</a>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="file-title">
+        <h2 id="file-title">ملف من جهازك</h2>
+        <p>اختر ملف MP3 أو WAV أو صيغة صوتية يدعمها متصفحك. يبقى الملف على جهازك.</p>
+        <input id="file" class="sr-only" type="file" accept="audio/*,.mp3,.wav">
+        <label class="file-button" for="file">اختيار ملف صوتي</label>
+        <div id="file-result" class="actions file-result" hidden>
+          <bdi id="file-name"></bdi>
+          <button id="play-file" type="button">تشغيل</button>
+        </div>
+      </section>
+    </div>
+
+    <footer>يتحكم نظام تشغيل جهازك في توجيه الصوت إلى السماعة أو ملحقات الصوت السلكية أو أجهزة البلوتوث المتوافقة. هذا التطبيق مخصص لاختبار الصوت فقط.</footer>
+  </main>
+</body>
+</html>
