@@ -19,13 +19,21 @@
     <div class="layout">
       <section class="card library" aria-labelledby="library-title">
         <h2 id="library-title">مكتبة الأصوات</h2>
-        <ul class="tracks">
+        <div id="arabic-library"></div>
+        <details class="library-section">
+          <summary>أصوات الاختبار <span>(3)</span></summary>
+          <ul class="tracks">
           <li><span>نغمة هادئة</span><button type="button" data-source="sounds/test-01.wav" data-title="نغمة هادئة">تشغيل</button></li>
           <li><span>نغمتان متعاقبتان</span><button type="button" data-source="sounds/test-02.wav" data-title="نغمتان متعاقبتان">تشغيل</button></li>
           <li><span>لحن قصير</span><button type="button" data-source="sounds/test-03.wav" data-title="لحن قصير">تشغيل</button></li>
-        </ul>
+          </ul>
+        </details>
         <div class="player">
           <h3 id="current" aria-live="polite">اختر صوتًا للتشغيل</h3>
+          <div class="actions">
+            <button id="player-toggle" type="button" disabled>تشغيل</button>
+            <button id="stop" type="button" disabled>إيقاف</button>
+          </div>
           <label class="sr-only" for="progress">موضع التشغيل</label>
           <input id="progress" type="range" min="0" max="1" step="0.05" value="0" dir="ltr" disabled>
           <div class="times" dir="ltr"><span id="elapsed">0:00</span><span id="duration">0:00</span></div>
@@ -33,6 +41,17 @@
             <label for="volume">مستوى الصوت</label>
             <input id="volume" type="range" min="0" max="100" value="15" dir="ltr">
             <output id="volume-value" for="volume" dir="ltr">15%</output>
+          </div>
+          <div class="speed">
+            <label for="speed">سرعة التشغيل</label>
+            <select id="speed" dir="ltr">
+              <option value="0.5">0.5x</option>
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+            </select>
+            <button id="reset-speed" type="button">إعادة السرعة إلى <bdi>1x</bdi></button>
           </div>
           <p id="playback-status" class="status" role="status"></p>
           <audio id="audio" preload="metadata"></audio>

@@ -1,6 +1,10 @@
 # Cochlear Audio Test V0.1
 
-A static Arabic RTL app for playing three bundled WAV samples, recording and downloading microphone audio, and playing audio files selected from your device. The browser keeps the selected file and current recording local. Download the recording before closing or refreshing the page if you want to keep it.
+A static Arabic RTL app with 32 Arabic MP3 samples in collapsible sections: مقاطع الحروف (12 syllables), الكلمات (12 words), and الجمل (8 sentences), plus a separate section for the original three WAV test sounds. It also records and downloads microphone audio and plays files selected from your device. The browser keeps the selected file and current recording local. Download the recording before closing or refreshing the page if you want to keep it.
+
+All sources share one player with play/pause, stop, seeking, independent volume, and playback speeds of 0.5x, 0.75x, 1x (default), 1.25x, and 1.5x. Speed changes apply immediately and carry over to the next sound, including uploads and recordings; reset returns to 1x. Pitch is preserved where supported. Speed changes do not alter audio files or downloaded recordings.
+
+The Arabic library is explicitly registered in `app.js`, with relative paths and no directory-listing API. Keep the `sounds/` folder alongside `index.html` when using localhost, VS Code Live Server, or GitHub Pages. No build step or dependencies are required.
 
 ## Run locally
 

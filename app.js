@@ -9,6 +9,52 @@ const recordStatus = byId("record-status");
 const recordButton = byId("record");
 const recordingButton = byId("play-recording");
 const fileButton = byId("play-file");
+const speed = byId("speed");
+// Explicit relative paths keep the library usable on static hosts, including GitHub Pages.
+const arabicLibrary = [
+  { title: "مقاطع الحروف", folder: "syllables", tracks: [
+    ["ba", "بَ"], ["bi", "بِ"], ["bu", "بُ"],
+    ["ma", "مَ"], ["mi", "مِ"], ["mu", "مُ"],
+    ["sa", "سَ"], ["si", "سِ"], ["su", "سُ"],
+    ["ta", "تَ"], ["ti", "تِ"], ["tu", "تُ"],
+  ] },
+  { title: "الكلمات", folder: "words", tracks: [
+    ["bab", "باب"], ["baba", "بابا"], ["bayt", "بيت"],
+    ["kitab", "كتاب"], ["kura", "كرة"], ["ma", "ماء"],
+    ["mama", "ماما"], ["qalam", "قلم"], ["qamar", "قمر"],
+    ["sayyara", "سيارة"], ["shams", "شمس"], ["tuffaha", "تفاحة"],
+  ] },
+  { title: "الجمل", folder: "sentences", tracks: [
+    ["ana_aktub", "أنا أكتب"], ["ayna_kura", "أين الكرة؟"],
+    ["bint_taqra", "البنت تقرأ"], ["hadha_bab", "هذا باب"],
+    ["hadha_bayt", "هذا بيت"], ["iftah_bab", "افتح الباب"],
+    ["urid_ma", "أريد ماء"], ["walad_yalab", "الولد يلعب"],
+  ] },
+];
+
+for (const section of arabicLibrary) {
+  const details = document.createElement("details");
+  details.className = "library-section";
+  const summary = document.createElement("summary");
+  summary.textContent = `${section.title} (${section.tracks.length})`;
+  const list = document.createElement("ul");
+  list.className = "tracks";
+  for (const [filename, title] of section.tracks) {
+    const item = document.createElement("li");
+    const label = document.createElement("span");
+    label.textContent = title;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.source = `sounds/${section.folder}/${filename}.mp3`;
+    button.dataset.title = title;
+    button.textContent = "تشغيل";
+    item.append(label, button);
+    list.append(item);
+  }
+  details.append(summary, list);
+  byId("arabic-library").append(details);
+}
+
 const playButtons = document.querySelectorAll("[data-source], #play-recording, #play-file");
 const samples = new Map();
 const sampleUrls = [];
@@ -36,7 +82,19 @@ function updateVolume() {
   if (gain) gain.gain.value = level;
 }
 
+function updateSpeed() {
+  const rate = Number(speed.value);
+  audio.defaultPlaybackRate = rate;
+  audio.playbackRate = rate;
+  for (const property of ["preservesPitch", "webkitPreservesPitch", "mozPreservesPitch"]) {
+    if (property in audio) audio[property] = true;
+  }
+}
+
 function updatePlayer() {
+  byId("player-toggle").disabled = !selected;
+  byId("stop").disabled = !selected;
+  byId("player-toggle").textContent = selected && !audio.paused && !audio.ended ? "إيقاف مؤقت" : "تشغيل";
   const duration = Number.isFinite(audio.duration) ? audio.duration
     : selected === recordingButton && !audio.error ? recordingDuration : 0;
   progress.disabled = !duration || Boolean(audio.error);
@@ -88,6 +146,7 @@ async function togglePlayback(button) {
     if (attempt !== playAttempt) return;
     audio.src = source;
   }
+  updateSpeed();
   try {
     // Some mobile browsers ignore HTMLMediaElement.volume.
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -114,7 +173,7 @@ async function togglePlayback(button) {
 for (const button of playButtons) {
   button.addEventListener("click", () => togglePlayback(button));
   if (!button.dataset.source || location.protocol === "file:") continue;
-  // Buffer the small bundled WAVs so seeking also works on servers without byte ranges.
+  // Buffer bundled samples so seeking also works on servers without byte ranges.
   const source = button.dataset.source;
   samples.set(button, fetch(source).then((response) => {
     if (!response.ok) throw new Error("Sample unavailable");
@@ -136,6 +195,21 @@ progress.addEventListener("input", () => {
   audio.currentTime = Number(progress.value);
 });
 volume.addEventListener("input", updateVolume);
+speed.addEventListener("change", updateSpeed);
+byId("reset-speed").addEventListener("click", () => {
+  speed.value = "1";
+  updateSpeed();
+});
+byId("player-toggle").addEventListener("click", () => {
+  if (selected) togglePlayback(selected);
+});
+byId("stop").addEventListener("click", () => {
+  playAttempt++;
+  audio.pause();
+  audio.currentTime = 0;
+  updatePlayer();
+});
+updateSpeed();
 updateVolume();
 updatePlayer();
 
